@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -14,21 +15,23 @@ namespace healthSystem_adrianDorey
         static string status;
         static int lives = 3;
         static int shield = 100;
-
-
+        static int remainder;
 
         static void Main(string[] args)
         {
             showHUD();
 
-            takeDamage(-20);
-           
+            takeDamage(10);
+
+            showHUD();           
+
             Console.WriteLine("Continue");
             Console.ReadKey();
         }
 
         static void showHUD()
         {
+            //cleanConsole();
             healthCheck();
             Console.WriteLine("Health: " + health + " / Health Status: " + status); 
             Console.WriteLine("Shield: " + shield);
@@ -36,18 +39,25 @@ namespace healthSystem_adrianDorey
             Console.WriteLine("");
         }
 
-        // modifies health / based on parameter input(input describes how much player is healed)
-        // range checking / error checking
+        static void cleanConsole()
+        {
+            Console.Clear();
+        }
+        
         static void heal(int hp)
         {
             Console.WriteLine();
-
-            health = health + hp;
 
             if (health >= 100)
             {
                 health = 100;
             }
+            else if (hp <= 0)
+            {
+                Error10("Healing");
+            }
+            else
+                health = health + hp;
         }
 
         static void healthCheck()
@@ -87,26 +97,59 @@ namespace healthSystem_adrianDorey
 
         }
 
-
-        // modifies shield /based on parameter input(input describes how much shield should regenerate)
-        // range checking / error checking
         static void regenerateShield(int hp)
         {
+            if (shield >= 100)
+            {
+                shield = 100;
+            }
+            if (hp <= 0)
+            {
+                Error10("shield");
+            }
 
         }
 
-        // modifies health, shield & lives
+        static void Error10(string error)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            if (error == "Shield" ||  error == "Healing")
+            {
+                Console.WriteLine("Error: " + error + " points cannot be negative");
+            }
+            else
+                Console.WriteLine("Error: " + error + " points cannot be positive");
+        }
+
         static void takeDamage(int damage)
         {
+
             if (damage <= 0)
             {
-                Console.WriteLine("Error: Player cannot take negative value of damage. Must be positive value.");
-                return;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Error10("Damage");
+                Console.ResetColor();
             }
-            else if(shield < damage)
+            else
             {
+                Console.ForegroundColor= ConsoleColor.Red;
+                Console.WriteLine("Player has taken " + damage + " damage");
+                Console.WriteLine();
+                Console.ResetColor();
+                if (shield >= damage)
+                {
+                    shield -= damage;
+                }
+                else
+                {
+                    remainder = damage - shield;
+                    shield = 0;
+                    health -= remainder;
+                }
+               
 
             }
+            
         }
 
     }
