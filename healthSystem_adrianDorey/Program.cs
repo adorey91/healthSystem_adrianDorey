@@ -21,7 +21,7 @@ namespace healthSystem_adrianDorey
         {
             showHUD();
 
-            takeDamage(10);
+            takeDamage(-10);
 
             showHUD();           
 
@@ -60,6 +60,52 @@ namespace healthSystem_adrianDorey
                 health = health + hp;
         }
 
+
+        static void regenerateShield(int hp)
+        {
+            if (shield >= 100)
+            {
+                shield = 100;
+            }
+            if (hp <= 0)
+            {
+                Error10("shield");
+            }
+        }
+        static void takeDamage(int damage)
+        {
+            if (damage <= 0)
+            {
+                Error10("Damage");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Player has taken " + damage + " damage");
+                Console.WriteLine();
+                Console.ResetColor();
+
+                if (shield >= damage)
+                {
+                    shield -= damage;
+                }
+                else
+                {
+                    remainder = damage - shield;
+                    shield = 0;
+                    health -= remainder;
+                }
+            }
+        }
+
+        static void Error10(string error)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            
+            Console.WriteLine("Error: " + error + " points cannot be negative, they must be positive.");
+            Console.ResetColor();
+        }
+
         static void healthCheck()
         {
             if (health <= 0)
@@ -96,61 +142,6 @@ namespace healthSystem_adrianDorey
             }
 
         }
-
-        static void regenerateShield(int hp)
-        {
-            if (shield >= 100)
-            {
-                shield = 100;
-            }
-            if (hp <= 0)
-            {
-                Error10("shield");
-            }
-
-        }
-
-        static void Error10(string error)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            if (error == "Shield" ||  error == "Healing")
-            {
-                Console.WriteLine("Error: " + error + " points cannot be negative");
-            }
-            else
-                Console.WriteLine("Error: " + error + " points cannot be positive");
-        }
-
-        static void takeDamage(int damage)
-        {
-
-            if (damage <= 0)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Error10("Damage");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.ForegroundColor= ConsoleColor.Red;
-                Console.WriteLine("Player has taken " + damage + " damage");
-                Console.WriteLine();
-                Console.ResetColor();
-                if (shield >= damage)
-                {
-                    shield -= damage;
-                }
-                else
-                {
-                    remainder = damage - shield;
-                    shield = 0;
-                    health -= remainder;
-                }
-               
-
-            }
-            
-        }
-
+        
     }
 }
