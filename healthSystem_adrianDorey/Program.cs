@@ -15,18 +15,16 @@ namespace healthSystem_adrianDorey
         static string status;
         static int lives = 3;
         static int shield = 100;
-        static int remainder;
+        static int remainder = 0;
+        static string playerInput;
 
         static void Main(string[] args)
         {
             showHUD();
 
-            takeDamage(-10);
+            takeDamage(200);
 
-            showHUD();           
-
-            Console.WriteLine("Continue");
-            Console.ReadKey();
+            showHUD();     
         }
 
         static void showHUD()
@@ -60,7 +58,6 @@ namespace healthSystem_adrianDorey
                 health = health + hp;
         }
 
-
         static void regenerateShield(int hp)
         {
             if (shield >= 100)
@@ -72,6 +69,7 @@ namespace healthSystem_adrianDorey
                 Error10("shield");
             }
         }
+
         static void takeDamage(int damage)
         {
             if (damage <= 0)
@@ -142,6 +140,35 @@ namespace healthSystem_adrianDorey
             }
 
         }
-        
+
+        static void ResetGame()
+        {
+            Console.WriteLine("Enter: Restart or Quit");
+            playerInput = Console.ReadLine();
+            playerInput = playerInput.ToLower();
+            Console.WriteLine();
+
+            if (playerInput == "restart")
+            {
+                health = 100;
+                lives = 3;
+                shield = 100;
+                remainder = 0;
+
+                showHUD();
+                Console.ReadKey();
+            }
+            else if (playerInput == "quit")
+            {
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Error: Unknown Input, this game will now exit.");
+                Console.ResetColor();
+                Console.ReadKey();
+            }
+        }
     }
 }
