@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -16,25 +17,64 @@ namespace healthSystem_adrianDorey
         static int lives = 3;
         static int shield = 100;
         static int remainder = 0;
-        static string playerInput;
 
         static void Main(string[] args)
         {
             showHUD();
+            takeDamage(125);
+            continueButton();
 
-            takeDamage(200);
+            showHUD();
+            takeDamage(75);
+            Revive();
+            continueButton();
 
-            showHUD();     
+            showHUD();
+            takeDamage(95);
+            Revive();
+            continueButton();
+
+            showHUD();
+            takeDamage(60);
+            Revive();
+            continueButton();
+
+            showHUD();
+            takeDamage(184);
+            Revive();
+            continueButton();
+
+            showHUD();
+            takeDamage(83);
+            Revive();
+            continueButton();
+
+            showHUD();
+            takeDamage(128);
+            Revive();
+            continueButton();
+
+            showHUD();
+            Console.ReadKey();
+
+
+            
         }
 
         static void showHUD()
         {
-            //cleanConsole();
+            cleanConsole();
             healthCheck();
             Console.WriteLine("Health: " + health + " / Health Status: " + status); 
             Console.WriteLine("Shield: " + shield);
             Console.WriteLine("Lives: " + lives);
             Console.WriteLine("");
+        }
+
+        static void continueButton()
+        {
+            Console.WriteLine("Press any key to continue..");
+            Console.ReadKey();
         }
 
         static void cleanConsole()
@@ -96,6 +136,29 @@ namespace healthSystem_adrianDorey
             }
         }
 
+        static void Revive()
+        {
+            if (health == 0)
+            {
+                Console.WriteLine("Player Died");
+                Console.WriteLine();
+                shield = 100;
+                health = 100;
+
+                if (lives > 0)
+                    lives = lives-1;
+            }
+            else if (lives == 0)
+            {
+                showHUD();
+                continueButton();
+                cleanConsole();
+                shield = 100;
+                health = 100;
+                lives = 3;
+            }
+        }
+
         static void Error10(string error)
         {
             Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -137,37 +200,6 @@ namespace healthSystem_adrianDorey
             {
                 Console.WriteLine("Game Over");
                 lives = 0;
-            }
-
-        }
-
-        static void ResetGame()
-        {
-            Console.WriteLine("Enter: Restart or Quit");
-            playerInput = Console.ReadLine();
-            playerInput = playerInput.ToLower();
-            Console.WriteLine();
-
-            if (playerInput == "restart")
-            {
-                health = 100;
-                lives = 3;
-                shield = 100;
-                remainder = 0;
-
-                showHUD();
-                Console.ReadKey();
-            }
-            else if (playerInput == "quit")
-            {
-                Console.ReadKey();
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("Error: Unknown Input, this game will now exit.");
-                Console.ResetColor();
-                Console.ReadKey();
             }
         }
     }
