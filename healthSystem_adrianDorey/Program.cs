@@ -29,8 +29,8 @@ namespace healthSystem_adrianDorey
             UnitTestHealthSystem();
             UnitTestXPSystem();
 
-            level = 1;
-            xp = 0;
+            level = 1; // resets level due to xp test
+            xp = 0; // sets xp to zero after xp test
 
             lives = 3; // resets lives due to healthsystem check setting them to 1
 
