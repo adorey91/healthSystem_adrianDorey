@@ -9,6 +9,7 @@ using System.Reflection.Emit;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace healthSystem_adrianDorey
 {
@@ -20,12 +21,18 @@ namespace healthSystem_adrianDorey
         static int lives = 3;
         static int shield = 100;
         static int remainder = 0;
+        static int xp = 0;
+        static int level = 1;
 
         static void Main(string[] args)
         {
             UnitTestHealthSystem();
+            UnitTestXPSystem();
 
-            lives = 3;
+            level = 1;
+            xp = 0;
+
+            lives = 3; // resets lives due to healthsystem check setting them to 1
 
             ShowHUD();
             TakeDamage(10);
@@ -35,6 +42,7 @@ namespace healthSystem_adrianDorey
 
             ShowHUD();
             TakeDamage(75);
+            
             ShowHUD();
             Revive();
 
@@ -43,15 +51,6 @@ namespace healthSystem_adrianDorey
 
             ShowHUD();
             RegenerateShield(25);
-
-            ShowHUD();
-            Heal(-25);
-
-            ShowHUD();
-            TakeDamage(-25);
-
-            ShowHUD();
-            RegenerateShield(-25);
 
             ShowHUD();
             TakeDamage(90);
@@ -63,13 +62,39 @@ namespace healthSystem_adrianDorey
 
             ShowHUD();
             TakeDamage(134);
+
+            ShowHUD();
             Revive();
 
             ShowHUD();
-            TakeDamage(116);
-            Revive();
 
+            ShowHUD();
+            Heal(-25);
+
+            ShowHUD();
+            TakeDamage(-25);
+
+            ShowHUD();
+            RegenerateShield(-25);
+
+            ShowHUD();
+            IncreaseXP(50);
+
+            ShowHUD();
+            IncreaseXP(50);
+
+            ShowHUD();
+            IncreaseXP(100);
+
+            ShowHUD();
+            IncreaseXP(149);
+
+            ShowHUD();
+            IncreaseXP(60);
+
+            ShowHUD();
             Console.ReadKey();
+
         }
 
         static void ShowHUD()
@@ -78,29 +103,31 @@ namespace healthSystem_adrianDorey
             Console.WriteLine("Health: " + health + " / Health Status: " + status); 
             Console.WriteLine("Shield: " + shield);
             Console.WriteLine("Lives: " + lives);
+            Console.WriteLine("Experience Points: " + xp);
+            Console.WriteLine("Level: " + level);
             Console.WriteLine("");
         }
 
         static void Heal(int hp)
         {
-            Console.WriteLine();
-
             if (hp <= 0)
             {
                 Error10("Healing");
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Player has healed " + hp + " points");
+                Console.WriteLine();
                 health = health + hp;
 
                 if (health >= 100)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Player is at full strength");
-                    Console.ResetColor();
+                    Console.WriteLine("Player is at full strength and cannot heal anymore");
                     Console.WriteLine();
                     health = 100;
                 }
+                Console.ResetColor();   
             }
         }
 
@@ -112,17 +139,18 @@ namespace healthSystem_adrianDorey
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Shield has regenerated " + hp + " points");
+                Console.WriteLine();
                 shield = hp + shield;
 
                 if (shield >= 100)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Shield is at full strength");
-                    Console.ResetColor();
+                    Console.WriteLine("Shield is at full strength and cannot regenerate anymore");
                     Console.WriteLine();
                     shield = 100;
                 }
-
+                Console.ResetColor();
             }
         }
 
@@ -166,17 +194,19 @@ namespace healthSystem_adrianDorey
                 Console.ResetColor();
                 Console.WriteLine();
 
-                shield = 100;
                 health = 100;
+                shield = 100;
+                lives = lives - 1;
 
-                if (lives == 0)
+                if (lives <= 0)
                 {
-                    ShowHUD();
+                    Console.ForegroundColor= ConsoleColor.Green;
+                    Console.WriteLine("Player Reborn");
+                    Console.ResetColor();   
                     lives = 3;
+                    health = 100;
+                    shield = 100;
                 }
-                else
-                    lives = lives - 1;
-                
             }
         }
 
@@ -225,6 +255,45 @@ namespace healthSystem_adrianDorey
             }
         }
 
+        static void IncreaseXP(int amount)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            xp = xp + amount;
+            Console.WriteLine("Player has gained " + amount + " xp");
+
+            if (xp >= 100 && level == 1)
+            {
+                level++;
+                xp = xp - 100;
+                Console.WriteLine("Player has gained a level");
+            }
+            else if (xp >= 200 && level == 2)
+            {
+                level++;
+                xp = xp - 200;
+                Console.WriteLine("Player has gained a level");
+            }
+            else if (xp >= 300 && level == 3)
+            {
+                level++;
+                xp = xp - 300;
+                Console.WriteLine("Player has gained a level");
+            }
+            else if (xp >= 400 && level == 4)
+            {
+                level++;
+                xp = xp - 400;
+                Console.WriteLine("Player has gained a level");
+            }
+            else if (xp >= 500 && level == 5)
+            {
+                level++;
+                xp = xp - 500;
+                Console.WriteLine("Player has gained a level");
+            }
+            Console.WriteLine();
+            Console.ResetColor();
+        }
 
         static void UnitTestHealthSystem()
         {
@@ -359,49 +428,49 @@ namespace healthSystem_adrianDorey
             Console.Clear();
         }
 
-        //static void UnitTestXPSystem()
-        //{
-        //    Debug.WriteLine("Unit testing XP / Level Up System started...");
+        static void UnitTestXPSystem()
+        {
+            Debug.WriteLine("Unit testing XP / Level Up System started...");
 
-        //    // IncreaseXP()
+            // IncreaseXP()
 
-        //    // IncreaseXP() - no level up; remain at level 1
-        //    xp = 0;
-        //    level = 1;
-        //    IncreaseXP(10);
-        //    Debug.Assert(xp == 10);
-        //    Debug.Assert(level == 1);
+            // IncreaseXP() - no level up; remain at level 1
+            xp = 0;
+            level = 1;
+            IncreaseXP(10);
+            Debug.Assert(xp == 10);
+            Debug.Assert(level == 1);
 
-        //    // IncreaseXP() - level up to level 2 (costs 100 xp)
-        //    xp = 0;
-        //    level = 1;
-        //    IncreaseXP(105);
-        //    Debug.Assert(xp == 5);
-        //    Debug.Assert(level == 2);
+            // IncreaseXP() - level up to level 2 (costs 100 xp)
+            xp = 0;
+            level = 1;
+            IncreaseXP(105);
+            Debug.Assert(xp == 5);
+            Debug.Assert(level == 2);
 
-        //    // IncreaseXP() - level up to level 3 (costs 200 xp)
-        //    xp = 0;
-        //    level = 2;
-        //    IncreaseXP(210);
-        //    Debug.Assert(xp == 10);
-        //    Debug.Assert(level == 3);
+            // IncreaseXP() - level up to level 3 (costs 200 xp)
+            xp = 0;
+            level = 2;
+            IncreaseXP(210);
+            Debug.Assert(xp == 10);
+            Debug.Assert(level == 3);
 
-        //    // IncreaseXP() - level up to level 4 (costs 300 xp)
-        //    xp = 0;
-        //    level = 3;
-        //    IncreaseXP(315);
-        //    Debug.Assert(xp == 15);
-        //    Debug.Assert(level == 4);
+            // IncreaseXP() - level up to level 4 (costs 300 xp)
+            xp = 0;
+            level = 3;
+            IncreaseXP(315);
+            Debug.Assert(xp == 15);
+            Debug.Assert(level == 4);
 
-        //    // IncreaseXP() - level up to level 5 (costs 400 xp)
-        //    xp = 0;
-        //    level = 4;
-        //    IncreaseXP(499);
-        //    Debug.Assert(xp == 99);
-        //    Debug.Assert(level == 5);
+            // IncreaseXP() - level up to level 5 (costs 400 xp)
+            xp = 0;
+            level = 4;
+            IncreaseXP(499);
+            Debug.Assert(xp == 99);
+            Debug.Assert(level == 5);
 
-        //    Debug.WriteLine("Unit testing XP / Level Up System completed.");
-        //    Console.Clear();
-        //}
+            Debug.WriteLine("Unit testing XP / Level Up System completed.");
+            Console.Clear();
+        }
     }
 }
